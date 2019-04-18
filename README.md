@@ -4,7 +4,7 @@ MLP (Multi-Layer Perceptron) is an ANN (Artificial Neural Network) which has its
 Organizing these neurons in layers permits to determine non-linear relationships between inputs.
 
 ## Structure of the MLP
-Only one hidden layer, with weights initialized with random values.
+Only one hidden layer, with weights initialized with normal distribution values.
 
 The number of nodes of input, hidden layer and output layer are configurable when instantiating the network.
 
@@ -18,9 +18,26 @@ The squashing function used is a sigmoid.
 - math, for exponential function
 
 ## Demo
-The demo file contains an example of training the network to perform XOR operations, which is not a linear-separable problem and thus needs a MLP.
+The demo file contains an example of training the network to perform XOR operations, which is not a linear-separable problem and thus needs a MLP and a second example for classifying hand-written numeric characters provided as 28x28 pixel matrix (786 inputs).
 
-The networks performs poorly sometimes because of random starting weights and biases.
+## Performance
+For the OCR part the results are:
+
+- Training set: **5000** samples - Testing set: **1000** samples
+    - Recall: 86% 
+    - Precision: 87%
+    - **Accuracy:** 87%
+
+- Training set: **10000** samples - Testing set: **2000** samples
+    - Recall: 89%
+    - Precision: 89%
+    - **Accuracy:** 89%
+    
+- Training set: **20000** samples - Testing set: **4000** samples
+    - Recall: 91%
+    - Precision: 91%
+    - **Accuracy:** 91%
+
 
 Run the demo by typing in your console:
 
