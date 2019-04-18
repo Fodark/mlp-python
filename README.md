@@ -39,6 +39,7 @@ For the OCR part the results are:
     - **Accuracy:** 91%
 
 The dataset used is available [here](https://www.kaggle.com/bagusn1367/mnist-data/version/1#train.csv)
+
 Run the demo by typing in your console:
 
 ```python demo.py```
