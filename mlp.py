@@ -21,7 +21,10 @@ class Mlp:
 
     def sigmoid_f(self, x):
         # Standard sigmoid function
-        return 1 / (1 + math.exp(-x))
+        if x < 0:
+            return 1 - 1/(1 + math.exp(x))
+        else:
+            return 1/(1 + math.exp(-x))
     
     def sigmoid(self, x):
         sigmoider = lambda x: self.sigmoid_f(x)
@@ -49,17 +52,18 @@ class Mlp:
 
     # This trai function uses stochastic gradient descent instead of batch
     def train(self, inp, targets):
+        targets = np.matrix(targets).transpose()
         # Calculate output with given input
         hidden_outputs, output = self.feed_forward(inp)
         inp = np.matrix(inp).transpose()
         # Calculate errors between predicted and real values
-        output_errors = targets - output
+        output_errors = np.subtract(targets, output)
 
         # Calculate gradient, first sigmoid derivative
-        gradient = np.multiply( output, (1-output) )
+        gradient = np.multiply( output, (1 - output) )
         gradient = np.multiply(output_errors, gradient)
         # Multiply by the learing rate
-        gradient = np.multiply(gradient, self.learning_rate)
+        gradient = gradient * self.learning_rate
         # Calculate hidden to output weights changes 
         delta_weights_output = np.dot(gradient, hidden_outputs.transpose())
         # The new weights are just the sum between the old ones and the deltas
