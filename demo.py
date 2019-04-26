@@ -61,7 +61,7 @@ def ocr(training_population=5000, testing_population=1000):
     print("Trained successfully.")
     print("Testing with {} samples...".format(testing_population))
     c_m = np.zeros(shape=(10, 10))
-    for i in range(1000):
+    for i in range(testing_population):
         data = test_set.sample(n=1)
         inputs = list(data.iloc[0, 1:])
         label = data["label"].tolist()[0]
