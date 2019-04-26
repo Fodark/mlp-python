@@ -2,7 +2,6 @@ from mlp import Mlp
 import random
 import pandas as pd
 import numpy as np
-import operator
 
 
 def xor():
@@ -35,9 +34,9 @@ def xor():
 
     for i in range(2):
         for j in range(2):
-            prediction = nn.predict([i, j]).item((0, 0))
-            print("Predicting XOR between {} and {} gave {} and the real is {} (Output: {})"
-                  .format(i, j, prediction > .5, bool(i) ^ bool(j), prediction))
+            out_class, out_prob = nn.predict([i, j])
+            print("Predicting XOR between {} and {} gave {} and the real is {} (Output: {0:.2f})"
+                  .format(i, j, out_prob > .5, bool(i) ^ bool(j), out_prob))
 
 
 def ocr(training_population=5000, testing_population=1000):
@@ -66,11 +65,9 @@ def ocr(training_population=5000, testing_population=1000):
         data = test_set.sample(n=1)
         inputs = list(data.iloc[0, 1:])
         label = data["label"].tolist()[0]
-        output = nn.predict(inputs)
-        probabilities = dict(enumerate(output.A1))
-        guess = max(probabilities.items(), key=operator.itemgetter(1))[0]
-        c_m[label][guess] = c_m[label][guess] + 1
-        # print("I'm {} and the guess is {} with prob: {}".format(label, guess, probabilities[guess]))
+        out_class, out_prob = nn.predict(inputs)
+        c_m[label][out_class] += 1
+
     print("Results:")
 
     correct_guesses = np.sum(np.diagonal(c_m))
@@ -91,7 +88,7 @@ def ocr(training_population=5000, testing_population=1000):
     recall = recall / 10
     precision = precision / 10
 
-    print("\tRecall: {}\n\tPrecision: {}\n\tAccuracy: {}".format(recall, precision, accuracy))
+    print("\tRecall: {0:.2f}\n\tPrecision: {0:.2f}\n\tAccuracy: {0:.2f}".format(recall, precision, accuracy))
 
 
 def filter_pixel(x):
@@ -102,7 +99,6 @@ def process_df(df):
     labels = df["label"]
     df = df.drop(["label"], axis=1)
     df = df.apply(np.vectorize(filter_pixel))
-    # print(df)
     df = pd.concat([labels, df], axis=1)
     return df
 
