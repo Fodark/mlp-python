@@ -4,9 +4,11 @@ MLP (Multi-Layer Perceptron) is an ANN (Artificial Neural Network) which has its
 Organizing these neurons in layers permits to determine non-linear relationships between inputs.
 
 ## Structure of the MLP
-Only one hidden layer, with weights initialized with normal distribution values.
+The network starts with one hidden layer, with weights initialized with normal distribution values.
 
 The number of nodes of input, hidden layer and output layer are configurable when instantiating the network.
+
+Calling `add_layer(number_of_nodes)` permits to add a new layer between the last hidden and the output one.
 
 The train functions performs a stochastic gradient descent but I'm planning to implement also batch gradient descent.
 
@@ -15,6 +17,7 @@ The squashing function used is a sigmoid.
 ## Dependencies
 - Python3
 - numpy, for matrix computation
+- pandas, for loading external data
 - math, for exponential function
 
 ## Demo
@@ -22,6 +25,8 @@ The demo file contains an example of training the network to perform XOR operati
 
 ## Performance
 For the OCR part the results are:
+
+**One hidden layer with 50 nodes**
 
 - Training set: **5000** samples - Testing set: **1000** samples
     - Recall: 86% 
@@ -37,6 +42,13 @@ For the OCR part the results are:
     - Recall: 91%
     - Precision: 91%
     - **Accuracy:** 91%
+    
+**Two hidden layer, first 150 nodes, second 50 nodes**
+
+- Training set: **50000** samples - Testing set: **5000** samples
+    - Recall: 95% 
+    - Precision: 95%
+    - **Accuracy:** 95%
 
 
 Run the demo by typing in your console:
