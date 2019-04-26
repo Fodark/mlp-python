@@ -45,9 +45,10 @@ def ocr(training_population=5000, testing_population=1000):
     df = pd.read_csv("../datasets/ocr_train.csv")
     df = process_df(df)
     train = df.sample(frac=.9)
-    test = df.drop(train.index)
+    test_set = df.drop(train.index)
     print("Loaded {} rows.".format(df.shape[0]))
-    nn = Mlp(784, 50, 10, learning_rate=.05)
+    nn = Mlp(784, 150, 10, learning_rate=.05)
+    nn.add_layer(50)
 
     print("Training the network with {} samples...".format(training_population))
     for i in range(training_population):
@@ -62,7 +63,7 @@ def ocr(training_population=5000, testing_population=1000):
     print("Testing with {} samples...".format(testing_population))
     c_m = np.zeros(shape=(10, 10))
     for i in range(1000):
-        data = test.sample(n=1)
+        data = test_set.sample(n=1)
         inputs = list(data.iloc[0, 1:])
         label = data["label"].tolist()[0]
         output = nn.predict(inputs)
@@ -71,10 +72,11 @@ def ocr(training_population=5000, testing_population=1000):
         c_m[label][guess] = c_m[label][guess] + 1
         # print("I'm {} and the guess is {} with prob: {}".format(label, guess, probabilities[guess]))
     print("Results:")
+
     correct_guesses = np.sum(np.diagonal(c_m))
     total_guesses = c_m.sum()
     accuracy = correct_guesses / total_guesses
-    # print("Accuracy: {}".format(correct_guesses / total_guesses))
+
     recall = 0
     precision = 0
     c_m_t = c_m.T
@@ -83,8 +85,8 @@ def ocr(training_population=5000, testing_population=1000):
         correct_guesses = c_m[i][i]
         total_row = np.sum(c_m[i])
         total_col = np.sum(c_m_t[i])
-        recall = recall + (correct_guesses / total_row)
-        precision = precision + (correct_guesses / total_col)
+        recall += (correct_guesses / total_row) if total_row > 0 else 0
+        precision += (correct_guesses / total_col) if total_col > 0 else 0
     
     recall = recall / 10
     precision = precision / 10
@@ -93,7 +95,7 @@ def ocr(training_population=5000, testing_population=1000):
 
 
 def filter_pixel(x):
-    return 1 if x > 127 else 0
+    return x / 255
 
 
 def process_df(df):
@@ -105,5 +107,5 @@ def process_df(df):
     return df
 
 
-ocr(training_population=20000, testing_population=4000)
+ocr(training_population=50000, testing_population=5000)
 # xor()
