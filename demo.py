@@ -25,17 +25,19 @@ def xor():
     ]
 
     # Create a MLP with 2 input, a hidden layer with 2 nodes a single output node
-    nn = Mlp(input_nodes=2, hidden_nodes=2, output_nodes=1)
+    nn = Mlp(init_nodes=2)
+    nn.add_layer(2)
+    nn.add_layer(1)
 
     print("Training the network...")
     for i in range(20000):
         data = random.choice(training)
         nn.train(data["input"], data["output"])
-
+    # nn.save("xor.mlp")
     for i in range(2):
         for j in range(2):
             out_class, out_prob = nn.predict([i, j])
-            print("Predicting XOR between {} and {} gave {} and the real is {} (Output: {0:.2f})"
+            print("Predicting XOR between {} and {} gave {} and the real is {} (Output: {:.2f})"
                   .format(i, j, out_prob > .5, bool(i) ^ bool(j), out_prob))
 
 
@@ -46,8 +48,10 @@ def ocr(training_population=5000, testing_population=1000):
     train = df.sample(frac=.9)
     test_set = df.drop(train.index)
     print("Loaded {} rows.".format(df.shape[0]))
-    nn = Mlp(784, 150, 10, learning_rate=.05)
+    nn = Mlp(init_nodes=784, learning_rate=.05)
+    nn.add_layer(150)
     nn.add_layer(50)
+    nn.add_layer(10)
 
     print("Training the network with {} samples...".format(training_population))
     for i in range(training_population):
@@ -59,6 +63,7 @@ def ocr(training_population=5000, testing_population=1000):
         nn.train(inputs, outputs)
 
     print("Trained successfully.")
+    # nn.save("ocr.mlp")
     print("Testing with {} samples...".format(testing_population))
     c_m = np.zeros(shape=(10, 10))
     for i in range(testing_population):

@@ -3,28 +3,71 @@ import math
 import operator
 
 class Mlp:
-    def __init__(self, input_nodes: int = 2, hidden_nodes: int = 2, output_nodes: int = 1,
-                 learning_rate: float = .2) -> object:
-        # Number of nodes in each layer
-        self.number_of_nodes = [input_nodes, hidden_nodes, output_nodes]
-
-        # Initialize random weigths with normal distribution
-        self.weights = [np.random.randn(hidden_nodes, input_nodes) * np.sqrt(2 / (hidden_nodes + input_nodes))]
-        self.weights.append(np.random.randn(output_nodes, hidden_nodes) * np.sqrt(2 / (output_nodes + hidden_nodes)))
-
-        self.biases = [np.random.uniform(0, 0, size=(hidden_nodes, 1))]
-        self.biases.append(np.random.uniform(0, 0, size=(output_nodes, 1)))
-
-        # How much every train iteration contributes to changing weights
+    def __init__(self, init_nodes: int = 0, learning_rate: float = .2) -> None:
+        self.number_of_nodes = []
+        if init_nodes > 0:
+            self.number_of_nodes.append(init_nodes)
+        self.weights = []
+        self.biases = []
         self.learning_rate = learning_rate
 
-    def add_layer(self, number_of_nodes):
-        self.number_of_nodes.insert(-1, number_of_nodes)
-        self.weights.append([])
-        # Recalculate the last 2 weigths affected by the new layer
-        for i in range(2):
-            self.weights[-1-i] = np.random.randn(self.number_of_nodes[-1-i], self.number_of_nodes[-2-i]) * np.sqrt(2 / (self.number_of_nodes[-1-i] + self.number_of_nodes[-2-i]))
-        self.biases.insert(-1, np.random.uniform(0, 0, size=(number_of_nodes, 1)))
+    def add_layer(self, number_of_nodes: int, weights = None, bias = None):
+        self.number_of_nodes.append(number_of_nodes)
+        if not weights is None:
+            self.weights.append(weights)
+        elif len(self.number_of_nodes) > 1:
+            self.weights.append(np.random.randn(self.number_of_nodes[-1], self.number_of_nodes[-2]) * np.sqrt(2 / (self.number_of_nodes[-1] + self.number_of_nodes[-2])))
+        
+        if not bias is None:
+            self.biases.append(bias)
+        elif len(self.number_of_nodes) > 1:
+            self.biases.append(np.random.uniform(0, 0, size=(number_of_nodes, 1)))
+    
+    def save(self, location):
+        f = open(location, "w+")
+        for i in self.number_of_nodes:
+            f.write(str(i) + " ")
+        f.write("\n")
+        for i in self.weights:
+            for j in i:
+                for k in j:
+                    f.write(str(k) + " ")
+                f.write("\t")
+            f.write("\n")
+        for b in self.biases:
+            for i in b:
+                for k in i:
+                    f.write(str(k) + " ")
+            f.write("\n")
+        f.close()
+
+    @staticmethod
+    def load(location):
+        f = open(location, "r")
+        lines = f.readlines()
+    
+        number_of_nodes = np.vectorize(lambda x: int(x))( lines[0].strip().split() )
+        weigths = []
+        for i in range(1, len(number_of_nodes)):
+            m = lines[i].strip().split("\t")
+            for j in range(len(m)):
+                m[j] = m[j].split()
+            m = np.vectorize(lambda x: float(x))(np.matrix(m))
+            weigths.append(m)
+        biases = []
+        for i in range(len(number_of_nodes), len(lines)):
+            b = lines[i].strip().split("\t")
+            for j in range(len(b)):
+                b[j] = b[j].split()
+            b = np.vectorize(lambda x: float(x))(np.matrix(b))
+            biases.append(b)
+        nn = Mlp()
+        for i in range(len(number_of_nodes)):
+            if i > 0:
+                nn.add_layer(number_of_nodes[i], weigths[i-1], biases[i-1])
+            else:
+                nn.add_layer(number_of_nodes[i])
+        return nn
 
     @staticmethod
     def sigmoid_f(x):
