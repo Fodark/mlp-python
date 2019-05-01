@@ -4,11 +4,11 @@ MLP (Multi-Layer Perceptron) is an ANN (Artificial Neural Network) which has its
 Organizing these neurons in layers permits to determine non-linear relationships between inputs.
 
 ## Structure of the MLP
-The network starts with one hidden layer, with weights initialized with normal distribution values.
+The network starts empty or only input layer if specified.
 
-The number of nodes of input, hidden layer and output layer are configurable when instantiating the network.
+Calling `add_layer(number_of_nodes)` allows to add a new layer as the last, optional weigths and bias for this layer can be specified.
 
-Calling `add_layer(number_of_nodes)` permits to add a new layer between the last hidden and the output one.
+Calling `save(file_name)` allows to save a file containing the network structure which can be loaded with the static method `Mlp.load(file_name)`
 
 The train functions performs a stochastic gradient descent but I'm planning to implement also batch gradient descent.
 
@@ -50,7 +50,14 @@ For the OCR part the results are:
     - Precision: 95%
     - **Accuracy:** 95%
 
-The dataset used is available [here](https://www.kaggle.com/bagusn1367/mnist-data/version/1#train.csv)
+**Two hidden layer, first 150 nodes, second 50 nodes (ReLU squashing function)**
+
+- Training set: **50000** samples - Testing set: **5000** samples
+    - Recall: 96% 
+    - Precision: 96%
+    - **Accuracy:** 96%
+
+The dataset used is available [here](https://www.kaggle.com/oddrationale/mnist-in-csv)
 
 Run the demo by typing in your console:
 
