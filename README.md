@@ -50,7 +50,14 @@ For the OCR part the results are:
     - Precision: 95%
     - **Accuracy:** 95%
 
-The dataset used is available [here](https://www.kaggle.com/bagusn1367/mnist-data/version/1#train.csv)
+**Two hidden layer, first 150 nodes, second 50 nodes (ReLU squashing function)**
+
+- Training set: **50000** samples - Testing set: **5000** samples
+    - Recall: 96% 
+    - Precision: 96%
+    - **Accuracy:** 96%
+
+The dataset used is available [here](https://www.kaggle.com/oddrationale/mnist-in-csv)
 
 Run the demo by typing in your console:
 
