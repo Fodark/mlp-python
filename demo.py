@@ -3,27 +3,26 @@ import random
 import pandas as pd
 import numpy as np
 
+training_xor = [
+    {
+        "input": [0, 0],
+        "output": [0]
+    },
+    {
+        "input": [1, 0],
+        "output": [1]
+    },
+    {
+        "input": [0, 1],
+        "output": [1]
+    },
+    {
+        "input": [1, 1],
+        "output": [0]
+    }
+]
 
 def xor():
-    training = [
-        {
-            "input": [0, 0],
-            "output": [0]
-        },
-        {
-            "input": [1, 0],
-            "output": [1]
-        },
-        {
-            "input": [0, 1],
-            "output": [1]
-        },
-        {
-            "input": [1, 1],
-            "output": [0]
-        }
-    ]
-
     # Create a MLP with 2 input, a hidden layer with 2 nodes a single output node
     nn = Mlp(init_nodes=2)
     nn.add_layer(2)
@@ -31,7 +30,7 @@ def xor():
 
     print("Training the network...")
     for i in range(20000):
-        data = random.choice(training)
+        data = random.choice(training_xor)
         nn.train(data["input"], data["output"])
     # nn.save("xor.mlp")
     for i in range(2):
@@ -43,14 +42,15 @@ def xor():
 
 def ocr(training_population=5000, testing_population=1000):
     print("Loading data...")
-    df = pd.read_csv("../datasets/ocr_train.csv")
-    df = process_df(df)
-    train = df.sample(frac=.9)
-    test_set = df.drop(train.index)
-    print("Loaded {} rows.".format(df.shape[0]))
+    train = pd.read_csv("../datasets/mnist_train.csv")
+    train = process_df(train)
+    test_set = pd.read_csv("../datasets/mnist_test.csv")
+    test_set = process_df(test_set)
+    print("Loaded {} rows for training.".format(train.shape[0]))
+    print("Loaded {} rows for testing.".format(test_set.shape[0]))
     nn = Mlp(init_nodes=784, learning_rate=.05)
     nn.add_layer(150)
-    nn.add_layer(50)
+    nn.add_layer(50, function="relu")
     nn.add_layer(10)
 
     print("Training the network with {} samples...".format(training_population))
@@ -106,7 +106,6 @@ def process_df(df):
     df = df.apply(np.vectorize(filter_pixel))
     df = pd.concat([labels, df], axis=1)
     return df
-
 
 ocr(training_population=50000, testing_population=5000)
 # xor()
