@@ -49,8 +49,8 @@ def ocr(training_population=5000, testing_population=1000):
     print("Loaded {} rows for training.".format(train.shape[0]))
     print("Loaded {} rows for testing.".format(test_set.shape[0]))
     nn = Mlp(init_nodes=784, learning_rate=.05)
-    nn.add_layer(150)
-    nn.add_layer(50, function="relu")
+    nn.add_layer(300)
+    nn.add_layer(150, function="relu")
     nn.add_layer(10)
 
     print("Training the network with {} samples...".format(training_population))
